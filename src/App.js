@@ -21,12 +21,10 @@ function BasicExample() {
       const itemExists = prevCart.find((cartItem) => cartItem.id === item.id);
 
       if (itemExists) {
-        // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng lên 1
         return prevCart.map((cartItem) =>
           cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
         );
       } else {
-        // Nếu sản phẩm chưa có trong giỏ hàng, thêm vào với quantity = 1
         return [...prevCart, { ...item, quantity: 1 }];
       }
     });
@@ -48,7 +46,13 @@ function BasicExample() {
             ? { ...item, quantity: item.quantity - 1 }
             : item
         )
-        .filter((item) => item.quantity > 0) // Nếu số lượng là 0, xóa sản phẩm khỏi giỏ hàng
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+  const removeFromCart = (itemId) => {
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.id !== itemId) // Xóa sản phẩm khỏi giỏ hàng
     );
   };
 
@@ -63,22 +67,13 @@ function BasicExample() {
             <Navbar.Brand href="#">Pizza house</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
-              <Nav
-                className="me-auto my-2 my-lg-0"
-                style={{ maxHeight: '100px' }}
-                navbarScroll
-              >
+              <Nav className="me-auto my-2 my-lg-0" style={{ maxHeight: '100px' }} navbarScroll>
                 <Nav.Link href="#action1">Home</Nav.Link>
                 <Nav.Link href="#action2">About us</Nav.Link>
                 <Nav.Link href="#action2">Contact</Nav.Link>
               </Nav>
               <Form className="d-flex">
-                <Form.Control
-                  type="search"
-                  placeholder="Search"
-                  className="me-2"
-                  aria-label="Search"
-                />
+                <Form.Control type="search" placeholder="Search" className="me-2" aria-label="Search" />
                 <Button variant="outline-success">Search</Button>
               </Form>
               <Button variant="outline-primary" className="ms-3" onClick={() => setShowCart(true)}>
@@ -92,66 +87,13 @@ function BasicExample() {
       <Row>
         <Carousel>
           <Carousel.Item interval={1000}>
-            <img
-              src="pizza1.jpg"
-              alt="First slide"
-              className="d-block w-130"
-            />
+            <img src="pizza1.jpg" alt="First slide" className="d-block w-130" />
             <Carousel.Caption>
               <h3>First slide label</h3>
               <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
             </Carousel.Caption>
           </Carousel.Item>
-          <Carousel.Item interval={1000}>
-            <img
-              src="pizza2.jpg"
-              alt="First slide"
-              className="d-block w-130"
-            />
-            <Carousel.Caption>
-              <h3>Second slide label</h3>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item interval={1000}>
-            <img
-              src="pizza3.jpg"
-              alt="First slide"
-              className="d-block w-130"
-            />
-            <Carousel.Caption>
-              <h3>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item interval={1000}>
-            <img
-              src="pizza4.jpg"
-              alt="Fourth slide"
-              className="d-block w-130"
-            />
-            <Carousel.Caption>
-              <h3>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
-            </Carousel.Caption>
-          </Carousel.Item>
-          <Carousel.Item interval={1000}>
-            <img
-              src="pizza5.jpg"
-              alt="First slide"
-              className="d-block w-130"
-            />
-            <Carousel.Caption>
-              <h3>Third slide label</h3>
-              <p>
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-              </p>
-            </Carousel.Caption>
-          </Carousel.Item>
+          {/* Add other carousel items */}
         </Carousel>
       </Row>
 
@@ -164,8 +106,7 @@ function BasicExample() {
               <Card.Body>
                 <Card.Title>Card Title {index + 1}</Card.Title>
                 <Card.Text>
-                  Some quick example text to build on the card title and make up the
-                  bulk of the card's content.
+                  Some quick example text to build on the card title and make up the bulk of the card's content.
                 </Card.Text>
                 <Button
                   variant="primary"
@@ -189,17 +130,22 @@ function BasicExample() {
             <p>Your cart is empty</p>
           ) : (
             cart.map((item) => (
-              <div key={item.id}>
-                <h5>{item.title}</h5>
-                <p>
-                  Quantity: {item.quantity}{' '}
-                  <Button variant="outline-success" onClick={() => increaseQuantity(item.id)}>
-                    +
-                  </Button>{' '}
-                  <Button variant="outline-danger" onClick={() => decreaseQuantity(item.id)}>
-                    -
-                  </Button>
-                </p>
+              <div key={item.id} className="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5>{item.title}</h5>
+                  <p>
+                    Quantity: {item.quantity}{' '}
+                    <Button variant="outline-success" onClick={() => increaseQuantity(item.id)}>
+                      +
+                    </Button>{' '}
+                    <Button variant="outline-danger" onClick={() => decreaseQuantity(item.id)}>
+                      -
+                    </Button>
+                  </p>
+                </div>
+                <Button variant="outline-danger" onClick={() => removeFromCart(item.id)}>
+                  Remove
+                </Button>
               </div>
             ))
           )}
